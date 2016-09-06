@@ -10,11 +10,11 @@ import cats.arrow.FunctionK
 
 package object rain {
 
-  implicit class FunctionKEx(z: FunctionK.type) {
+  private[rain] implicit class FunctionKEx(z: FunctionK.type) {
     def lift[F[_], G[_]](f: (F[α] ⇒ G[α]) forSome { type α }): FunctionK[F, G] = macro FunctionKExImpl.lift[F, G]
   }
 
-  object FunctionKExImpl {
+  private[rain] object FunctionKExImpl {
 
     // format: OFF
    def lift[

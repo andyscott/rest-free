@@ -35,12 +35,23 @@ object BuildCommon extends AutoPlugin {
     cancelable in Global := true,
 
     scalacOptions ++= Seq(
-      "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
-    scalacOptions ++= Seq(
-      "-Ywarn-unused-import"),
-    scalacOptions ++= Seq(
+      "-deprecation",
+      "-encoding", "UTF-8",
+      "-feature",
+      "-language:existentials",
+      "-language:higherKinds",
       "-language:implicitConversions",
-      "-language:higherKinds"),
+      "-language:experimental.macros",
+      "-unchecked",
+      "-Xfatal-warnings",
+      "-Xlint",
+      "-Yinline-warnings",
+      "-Yno-adapted-args",
+      "-Ywarn-dead-code",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Ywarn-unused-import",
+      "-Xfuture"),
 
     javacOptions    ++= Seq("-encoding", "UTF-8", "-Xlint:-options"),
     headers         <<= (name, version) { (name, version) ⇒ Map(
