@@ -26,6 +26,7 @@ class InMemoryUserServiceActor extends ServiceActor[UserOp] {
   private[this] def createUser(op: CreateUser): Res.Op[CreateUser] = {
     val user = User(
       id        = s"${System.currentTimeMillis}",
+      moniker   = op.moniker,
       firstName = op.firstName,
       lastName  = op.lastName,
       age       = op.age
@@ -41,7 +42,8 @@ class InMemoryUserServiceActor extends ServiceActor[UserOp] {
       users.get(op.id),
       DoesNotExist(op.id))
 
-  private[this] def updateUser(op: UpdateUser): Res.Op[UpdateUser] = ???
+  private[this] def updateUser(op: UpdateUser): Res.Op[UpdateUser] =
+    Xor.left(NotImplementedYet("updateUser"))
 
   private[this] def deleteUser(op: DeleteUser): Res.Op[DeleteUser] = ???
 

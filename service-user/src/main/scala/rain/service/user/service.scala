@@ -17,10 +17,11 @@ class UserService[IO[_]](lift: UserOp ~> IO) extends Service[IO] {
     * @return [[IO]] of the created [[User]]
     */
   def createUser(
+    moniker: String,
     firstName: String,
     lastName: String,
     age: Option[User.Age]
-  ): IO[Error Xor User] = lift(CreateUser(firstName, lastName, age))
+  ): IO[Error Xor User] = lift(CreateUser(moniker, firstName, lastName, age))
 
   def readUser(
     id: User.Id
@@ -29,8 +30,9 @@ class UserService[IO[_]](lift: UserOp ~> IO) extends Service[IO] {
   def listUsers(): IO[Error Xor List[User]] = lift(ListUsers())
 
   def updateUser(
-    id: User.Id
-  ): IO[Error Xor User] = lift(UpdateUser(id))
+    id: User.Id,
+    updates: User.Update
+  ): IO[Error Xor User] = lift(UpdateUser(id, updates))
 
   /** Delete a user with a given id.
     *
@@ -57,9 +59,11 @@ object UserOp {
     final override def fillInStackTrace = this
   }
 
+  case class NotImplementedYet(what: String) extends Error
   case class DoesNotExist(id: User.Id) extends Error
 
   case class CreateUser(
+    moniker: String,
     firstName: String,
     lastName: String,
     age: Option[User.Age]
@@ -70,7 +74,8 @@ object UserOp {
   ) extends UserOp[Error Xor User]
 
   case class UpdateUser(
-    id: User.Id
+    id: User.Id,
+    updates: User.Update
   ) extends UserOp[Error Xor User]
 
   case class DeleteUser(

@@ -29,10 +29,17 @@ object TestApp {
     val userAPI = UserService.free
     val program = for {
       user ← XorT(userAPI.createUser(
+        moniker   = "gth896b",
         firstName = "Andy",
         lastName  = "Scott",
         age       = Some(28)))
 
+      _ ← XorT(userAPI.updateUser(
+        user.id,
+        User.Update(
+          firstName = Some("Super Andy")
+        )
+      ))
       user2 ← XorT(userAPI.readUser(user.id))
     } yield (user, user2)
 
