@@ -8,7 +8,6 @@ import eu.timepit.refined.auto._
 import eu.timepit.refined.numeric._
 
 import cats.data.XorT
-import cats.instances.future._
 
 import akka.actor._
 import akka.util.Timeout
@@ -18,7 +17,6 @@ import rain.service.user._
 import rain.service.user.impl._
 
 import scala.concurrent.duration._
-import scala.concurrent.Future
 
 object TestApp {
 
@@ -41,14 +39,39 @@ object TestApp {
     // spin up service/backend
     val system = ActorSystem("default")
     val userServiceActor = system.actorOf(InMemoryUserServiceActor.props)
-    val userServiceInterp =
-      AskFunctionK.instance[UserOp, Future](userServiceActor, timeout)
 
-    // evaluate program
-    val res = program.value.foldMap(userServiceInterp)
-    res.foreach(r ⇒ println("Result: " + r))
+    // for Future
+    {
+      import scala.concurrent.Future
+      import cats.instances.future._
+
+      val userServiceInterp =
+        AskFunctionK.instance[UserOp, Future](userServiceActor, timeout)
+
+      // evaluate program
+      val res = program.value.foldMap(userServiceInterp)
+      res.foreach(r ⇒ println("Future result: " + r))
+    }
+
+    // for Task
+    {
+      import monix.cats._
+      import monix.eval.Task
+      import monix.execution.Scheduler
+
+      val userServiceInterp =
+        AskFunctionK.instance[UserOp, Task](userServiceActor, timeout)
+
+      // evaluate program
+      val res = program.value.foldMap(userServiceInterp)
+
+      println("Task result: " + res.coeval(Scheduler.global).value)
+
+    }
+
     Thread.sleep(100)
     system.terminate().foreach(_ ⇒ ())
+
   }
 
 }

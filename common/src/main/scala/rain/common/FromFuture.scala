@@ -4,7 +4,12 @@
 
 package rain.common
 
+import rain._
+
 import cats._
+import cats.arrow.FunctionK
+
+import monix.eval.Task
 import scala.concurrent.Future
 
 /** A typeclass encoding the ability to create functor `F` from a
@@ -21,5 +26,10 @@ object FromFuture {
     }
 
   /** The identity instance, for `Future` itself. */
-  implicit val id: FromFuture[Future] = apply(arrow.FunctionK.id[Future])
+  implicit val id: FromFuture[Future] =
+    apply(FunctionK.id[Future])
+
+  implicit val fromMonixTask: FromFuture[Task] =
+    apply(FunctionK.lift(Task.fromFuture))
+
 }

@@ -11,6 +11,7 @@ lazy val shapelessVersion  = "2.3.2"
 lazy val refinedVersion    = "0.5.0"
 lazy val scalacheckVersion = "1.13.2"
 lazy val quillVersion      = "0.9.0"
+lazy val monixVersion      = "2.0.0"
 
 lazy val common = (project in file("common"))
   .settings(name := "common")
@@ -21,7 +22,10 @@ lazy val common = (project in file("common"))
       "com.chuusai"       %% "shapeless"              % shapelessVersion,
       "eu.timepit"        %% "refined"                % refinedVersion,
       "com.typesafe.akka" %% "akka-actor"             % akkaVersion,
-      "io.getquill"       %% "quill-cassandra"        % quillVersion
+      "io.getquill"       %% "quill-cassandra"        % quillVersion,
+      "io.monix"          %% "monix"                  % monixVersion,
+      "io.monix"          %% "monix-cats"             % monixVersion,
+      "io.monix"          %% "monix-eval"             % monixVersion
     )
   )
 

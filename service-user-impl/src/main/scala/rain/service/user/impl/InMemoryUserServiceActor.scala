@@ -37,7 +37,8 @@ class InMemoryUserServiceActor extends ServiceActor[UserOp] {
   }
 
   private[this] def readUser(op: ReadUser): Res.Op[ReadUser] =
-    Xor.fromOption(users.get(op.id),
+    Xor.fromOption(
+      users.get(op.id),
       DoesNotExist(op.id))
 
   private[this] def updateUser(op: UpdateUser): Res.Op[UpdateUser] = ???
@@ -46,7 +47,6 @@ class InMemoryUserServiceActor extends ServiceActor[UserOp] {
 
   private[this] def listUsers(op: ListUsers): Res.Op[ListUsers] =
     Xor.right(users.values.toList)
-
 
 }
 
