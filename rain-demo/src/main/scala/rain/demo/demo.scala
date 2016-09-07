@@ -37,9 +37,8 @@ object TestApp {
       _ ← XorT(userAPI.updateUser(
         user.id,
         User.Update(
-          firstName = Some("Super Andy")
-        )
-      ))
+          firstName = Some("Andy++"), lastName = Some("Wahoo"))))
+
       user2 ← XorT(userAPI.readUser(user.id))
     } yield (user, user2)
 
@@ -78,7 +77,6 @@ object TestApp {
 
     Thread.sleep(100)
     system.terminate().foreach(_ ⇒ ())
-
   }
 
 }

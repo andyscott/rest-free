@@ -43,9 +43,24 @@ class InMemoryUserServiceActor extends ServiceActor[UserOp] {
       DoesNotExist(op.id))
 
   private[this] def updateUser(op: UpdateUser): Res.Op[UpdateUser] =
-    Xor.left(NotImplementedYet("updateUser"))
+    for {
+      user ← Xor.fromOption(
+        users.get(op.id),
+        DoesNotExist(op.id))
+      updatedUser = user.copy(
+        firstName = op.updates.firstName getOrElse user.firstName,
+        lastName  = op.updates.lastName getOrElse user.lastName,
+        age       = op.updates.age getOrElse user.age)
+      _ = users += user.id → updatedUser
+    } yield updatedUser
 
-  private[this] def deleteUser(op: DeleteUser): Res.Op[DeleteUser] = ???
+  private[this] def deleteUser(op: DeleteUser): Res.Op[DeleteUser] =
+    for {
+      removedUser ← Xor.fromOption(
+        users.get(op.id),
+        DoesNotExist(op.id))
+      _ = users -= op.id
+    } yield removedUser
 
   private[this] def listUsers(op: ListUsers): Res.Op[ListUsers] =
     Xor.right(users.values.toList)
